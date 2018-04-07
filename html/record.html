@@ -5,10 +5,6 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>Imitate Me</title>
 		<link rel="stylesheet" type="text/css" href="../css/index.css">
-		<!-- <script type="text/javascript" src="../js/index.js"></script> -->
-    <!-- <script type="text/javascript" src="../js/record.js"></script> -->
-		<!-- <script type="text/javascript" src="../js/record-test.js"></script> -->
-		<!-- <script src="../node-modules/msr/MediaStreamRecorder.js"></script> -->
     <script type="text/javascript" src="../js/myo.js"></script>
     <script>
       var recording = true;
@@ -27,9 +23,21 @@
       function StopRecording() {
           recording = false;
           // console.log(array);
-          console.log(emgArray);
+          downloadObjectAsJson(array, "data")
+          // downloadObjectAsJson(EMGarray, "emgData")
+          console.log("Downloaded JSON");
+
           array = [];
           emgArray = [];
+      }
+
+      function downloadObjectAsJson(exportObj, exportName){
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     dataStr);
+        downloadAnchorNode.setAttribute("download", exportName + ".json");
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
       }
 
       function StartRecording() {
