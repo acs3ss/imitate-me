@@ -24,16 +24,20 @@
       // document.getElementById("stop-recording").onclick = function() {stopRecord()};
       function StopRecording() {
           recording = false;
-      		console.log(array);
+          console.log(array);
+          array = [];
+
       }
 
       function StartRecording() {
+        recording = true;
         console.log("Started recording");
-        while(recording) {
-          Myo.on('imu', function(data){
+        Myo.on('imu', function(data){
+            if(recording){
               array.push(data);
-          });
-        }
+            }
+        });
+
       }
     </script>
 
