@@ -7,12 +7,26 @@
 		<link rel="stylesheet" type="text/css" href="../css/index.css">
 		<!-- <script type="text/javascript" src="../js/index.js"></script> -->
     <!-- <script type="text/javascript" src="../js/record.js"></script> -->
-		<script type="text/javascript" src="../js/record-test.js"></script>
-		<script src="../node-modules/msr/MediaStreamRecorder.js"></script>
+		<!-- <script type="text/javascript" src="../js/record-test.js"></script> -->
+		<!-- <script src="../node-modules/msr/MediaStreamRecorder.js"></script> -->
+    <script type="text/javascript" src="../js/myo.js"></script>
     <script>
-      document.getElementById("start-recording").onclick = function() {startRecord()};
-      document.getElementById("stop-recording").onclick = function() {stopRecord()};
+      Myo.connect('com.stolksdorf.myAwesomeApp');
+      Myo.on('connected', function(){
+          myMyo = this;
+          console.log("yo");
+      });
+
+      Myo.on('fist', function(){
+        console.log('Hello Myo!');
+        this.vibrate();
+      });
     </script>
+    <script>
+      // document.getElementById("start-recording").onclick = function() {startRecord()};
+      // document.getElementById("stop-recording").onclick = function() {stopRecord()};
+    </script>
+
 
 
     <!-- <script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"> </script>
