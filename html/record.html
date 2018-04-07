@@ -13,9 +13,11 @@
     <script>
       var recording = true;
       var array = [];
+      var emgArray = [];
       Myo.connect('com.stolksdorf.myAwesomeApp');
       Myo.on('connected', function(){
           myMyo = this;
+          this.streamEMG(true);
           console.log("yo");
       });
     </script>
@@ -24,9 +26,10 @@
       // document.getElementById("stop-recording").onclick = function() {stopRecord()};
       function StopRecording() {
           recording = false;
-          console.log(array);
+          // console.log(array);
+          console.log(emgArray);
           array = [];
-
+          emgArray = [];
       }
 
       function StartRecording() {
@@ -35,6 +38,11 @@
         Myo.on('imu', function(data){
             if(recording){
               array.push(data);
+            }
+        });
+        Myo.on('emg', function(data){
+            if(recording){
+              emgArray.push(data);
             }
         });
 
