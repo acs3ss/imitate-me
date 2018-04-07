@@ -19,6 +19,4 @@
 // function onMediaError(e) {
 //     console.error('media error', e);
 // }
-
-alert( 'Hello, world!' );
   

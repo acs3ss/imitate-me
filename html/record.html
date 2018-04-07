@@ -4,12 +4,45 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>Imitate Me</title>
-		<link rel="stylesheet" type="text/css" href="index.css">
-		<script type="text/javascript" src="index.js"></script>
-		<script type="text/javascript" src="record.js"></script>
-		<script src="/MediaStreamRecorder.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/index.css">
+		<!-- <script type="text/javascript" src="../js/index.js"></script> -->
+    <!-- <script type="text/javascript" src="../js/record.js"></script> -->
+		<script type="text/javascript" src="../js/record-test.js"></script>
+		<script src="../node-modules/msr/MediaStreamRecorder.js"></script>
+    <script>
+      document.getElementById("start-recording").onclick = function() {startRecord()};
+      document.getElementById("stop-recording").onclick = function() {stopRecord()};
+    </script>
+
+
+    <!-- <script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"> </script>
+  <script>
+    var mediaConstraints = {
+        audio: true,
+        video: true
+    };
+
+    navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+
+    function onMediaSuccess(stream) {
+        var multiStreamRecorder = new MultiStreamRecorder(stream);
+        multiStreamRecorder.video = yourVideoElement; // to get maximum accuracy
+        multiStreamRecorder.audioChannels = 1;
+        mediaRecorder.videoWidth  = 1280;
+        mediaRecorder.videoHeight = 720;
+        multiStreamRecorder.ondataavailable = function (blobs) {
+            // blobs.audio
+            // blobs.video
+        };
+        multiStreamRecorder.start(3 * 1000);
+    }
+
+    function onMediaError(e) {
+        console.error('media error', e);
+    }
+  </script> -->
 	</head>
-	
+
 	<body>
 
 		<header id="header">
@@ -17,37 +50,59 @@
 				<h1>Imitate Me</h1>
 			</div>
 		</header>
-		
+
 		<div id="wrapper">
-		
+
 			<main>
 				<div id="content">
 					<div class="innertube">
 						<h1>Record</h1>
+
+              <section class="experiment"
+                <div>
+                  <button id="start-recording">Start</button>
+                  <button id="stop-recording">Stop</button>
+                  <button id="pause-recording" disabled>Pause</button>
+                  <button id="resume-recording" disabled>Resume</button>
+                  <button id="save-recording" disabled>Save</button>
+                  <label for="video-width">Video Width:</label>
+                  <input type="text" id="video-width" value="320">
+
+                  <label for="video-height">Video Height:</label>
+                  <input type="text" id="video-height" value="240">
+                </div>
+              </sec
+
+
+              <section class="experiment">
+                <div id="videos-container">
+                  <video controls="" width="320" height="240"></video>
+                </div>
+              </section>
 						<p>
 							Iframe here
 						</p>
 					</div>
 				</div>
 			</main>
-			
+
 			<nav id="nav">
 				<div class="innertube">
 					<ul>
 						<li><a href="index.html">About</a></li>
-						<li><a href="#">Record</a></li>
-						<li><a href="#">Imitate</a></li>
+						<li><a href="record.html">Record</a></li>
+						<li><a href="test.html">Imitate</a></li>
 					</ul>
 				</div>
 			</nav>
-		
+
 		</div>
-		
+
 		<footer id="footer">
 			<div class="innertube">
 				<p>Footer...</p>
 			</div>
 		</footer>
-	
+
 	</body>
 </html>
