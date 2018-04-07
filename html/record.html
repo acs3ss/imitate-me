@@ -11,20 +11,30 @@
 		<!-- <script src="../node-modules/msr/MediaStreamRecorder.js"></script> -->
     <script type="text/javascript" src="../js/myo.js"></script>
     <script>
+      var recording = true;
+      var array = [];
       Myo.connect('com.stolksdorf.myAwesomeApp');
       Myo.on('connected', function(){
           myMyo = this;
           console.log("yo");
       });
-
-      Myo.on('fist', function(){
-        console.log('Hello Myo!');
-        this.vibrate();
-      });
     </script>
     <script>
       // document.getElementById("start-recording").onclick = function() {startRecord()};
       // document.getElementById("stop-recording").onclick = function() {stopRecord()};
+      function StopRecording() {
+          recording = false;
+      		console.log(array);
+      }
+
+      function StartRecording() {
+        console.log("Started recording");
+        while(recording) {
+          Myo.on('imu', function(data){
+              array.push(data);
+          });
+        }
+      }
     </script>
 
 
@@ -74,8 +84,8 @@
 
               <section class="experiment"
                 <div>
-                  <button id="start-recording">Start</button>
-                  <button id="stop-recording">Stop</button>
+                  <button id="start-recording" onclick="StartRecording()">Start</button>
+                  <button id="stop-recording" onclick="StopRecording()">Stop</button>
                   <button id="pause-recording" disabled>Pause</button>
                   <button id="resume-recording" disabled>Resume</button>
                   <button id="save-recording" disabled>Save</button>
