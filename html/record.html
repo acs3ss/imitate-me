@@ -2,9 +2,9 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Imitate Me</title>
-		<link rel="stylesheet" type="text/css" href="../css/index.css">
-    <script type="text/javascript" src="../js/myo.js"></script>
+		<title>Reflextion</title>
+    <link rel='stylesheet' href='../css/styles.css' type='text/css' />
+    <link href="https://fonts.googleapis.com/css?family=Lato|Montserrat:200|Open+Sans:300|Roboto" rel="stylesheet">    <script type="text/javascript" src="../js/myo.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script>
       var recording = true;
@@ -29,9 +29,9 @@
           document.getElementById("start-recording").disabled = false;
           document.getElementById("stop-recording").disabled = true;
           // console.log(array);
-          // downloadObjectAsJson(array, "data");
-          // downloadObjectAsJson(EMGarray, "emgData");
-          // console.log("Downloaded JSON");
+          downloadObjectAsJson(array, "data");
+          downloadObjectAsJson(EMGarray, "emgData");
+          console.log("Downloaded JSON");
 
           corsReq('http://127.0.0.1:5000/', 0);
           console.log("Submitted GET request");
@@ -114,57 +114,37 @@
 	</head>
 
 	<body>
-
-		<header id="header">
-			<div class="innertube">
-				<h1>Imitate Me</h1>
-			</div>
-		</header>
-
-		<div id="wrapper">
-
-			<main>
-				<div id="content">
-					<div class="innertube">
-						<h1>Record</h1>
-
-              <section class="experiment"
-                <div>
-                  <button id="start-recording" class="control" onclick="StartRecording()">Start</button>
-                  <button id="stop-recording" class="control" onclick="StopRecording()" disabled="true">Stop</button>
-                </div>
-              </sec
-
-
+    <div class="menu">
+      <ul>
+        <li><a href="index.html">ABOUT</a></li>
+        <li><a href="record.html">RECORD</a></li>
+        <li><a href="search.html">IMITATE</a></li>
+      </ul>
+    </div>
+      <div class="title">
+        <h1>Reflextion</h1>
+        <div class="record">
+            <h3>Record</h3>
               <section class="experiment">
-                <div id="videos-container">
-                  <video controls="" width="560" height="560"></video>
+                <div>
+                  <button id="start-recording" onclick="StartRecording()">Start</button>
+                  <button id="stop-recording" onclick="StopRecording()">Stop</button>
+                  <button id="save-recording" onclick="SaveRecording()">Save</button>
                 </div>
               </section>
-						<p>
-							Iframe here
-						</p>
-					</div>
-				</div>
-			</main>
-
-			<nav id="nav">
-				<div class="innertube">
-					<ul>
-						<li><a href="index.html">About</a></li>
-						<li><a href="record.html">Record</a></li>
-						<li><a href="test.html">Imitate</a></li>
-					</ul>
-				</div>
-			</nav>
-
-		</div>
-
-		<footer id="footer">
-			<div class="innertube">
-				<p>Footer...</p>
-			</div>
-		</footer>
-
+              <div class="topnav">
+              <form action="/action_page.php">
+                <input type="text" placeholder="Search.." name="search">
+                <button class="sub" type="submit">Submit</button>
+              </form>
+              </div>
+              <section class="experiment">
+                <div id="videos-container">
+                  <video></video>
+                </div>
+              </section>
+        
+          </div>
+      </div>
 	</body>
 </html>

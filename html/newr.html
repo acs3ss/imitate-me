@@ -75,26 +75,18 @@
                 <div>
                   <button id="start-recording" onclick="StartRecording()">Start</button>
                   <button id="stop-recording" onclick="StopRecording()">Stop</button>
-                  <button id="pause-recording" disabled>Pause</button>
-                  <button id="resume-recording" disabled>Resume</button>
                   <button id="save-recording" onclick="SaveRecording()">Save</button>
-                  <label for="video-width">Video Width:</label>
-                  <input type="text" id="video-width" value="320">
-
-                  <label for="video-height">Video Height:</label>
-                  <input type="text" id="video-height" value="240">
                 </div>
               </section>
-
-
+              <div class="topnav">
+              <input type="text" placeholder="Search..">
+              </div>
               <section class="experiment">
                 <div id="videos-container">
-                  <video controls="" width="320" height="240"></video>
+                  <video></video>
                 </div>
               </section>
-            <p>
-              Iframe here
-            </p>
+        
           </div>
       </div>
 	</body>
