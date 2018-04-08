@@ -18,11 +18,17 @@
           console.log("yo");
       });
     </script>
+    <script type="text/javascript">
+      
+      document.getElementById("start-recording").disabled = true;
+    </script>
     <script>
       // document.getElementById("start-recording").onclick = function() {startRecord()};
       // document.getElementById("stop-recording").onclick = function() {stopRecord()};
       function StopRecording() {
           recording = false;
+          document.getElementById("start-recording").disabled = false;
+          document.getElementById("stop-recording").disabled = true;
           // console.log(array);
           // downloadObjectAsJson(array, "data");
           // downloadObjectAsJson(EMGarray, "emgData");
@@ -45,6 +51,8 @@
       }
 
       function StartRecording() {
+        document.getElementById("start-recording").disabled = true;
+        document.getElementById("stop-recording").disabled = false;
         recording = true;
         console.log("Started recording");
         Myo.on('imu', function(data){
@@ -104,35 +112,6 @@
         return xhr;
       }
     </script>
-
-
-
-    <!-- <script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"> </script>
-  <script>
-    var mediaConstraints = {
-        audio: true,
-        video: true
-    };
-
-    navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
-
-    function onMediaSuccess(stream) {
-        var multiStreamRecorder = new MultiStreamRecorder(stream);
-        multiStreamRecorder.video = yourVideoElement; // to get maximum accuracy
-        multiStreamRecorder.audioChannels = 1;
-        mediaRecorder.videoWidth  = 1280;
-        mediaRecorder.videoHeight = 720;
-        multiStreamRecorder.ondataavailable = function (blobs) {
-            // blobs.audio
-            // blobs.video
-        };
-        multiStreamRecorder.start(3 * 1000);
-    }
-
-    function onMediaError(e) {
-        console.error('media error', e);
-    }
-  </script> -->
 	</head>
 
 	<body>
@@ -152,23 +131,15 @@
 
               <section class="experiment"
                 <div>
-                  <button id="start-recording" onclick="StartRecording()">Start</button>
-                  <button id="stop-recording" onclick="StopRecording()">Stop</button>
-                  <button id="pause-recording" disabled>Pause</button>
-                  <button id="resume-recording" disabled>Resume</button>
-                  <button id="save-recording" disabled>Save</button>
-                  <label for="video-width">Video Width:</label>
-                  <input type="text" id="video-width" value="320">
-
-                  <label for="video-height">Video Height:</label>
-                  <input type="text" id="video-height" value="240">
+                  <button id="start-recording" class="control" onclick="StartRecording()">Start</button>
+                  <button id="stop-recording" class="control" onclick="StopRecording()" disabled="true">Stop</button>
                 </div>
               </sec
 
 
               <section class="experiment">
                 <div id="videos-container">
-                  <video controls="" width="320" height="240"></video>
+                  <video controls="" width="560" height="560"></video>
                 </div>
               </section>
 						<p>
