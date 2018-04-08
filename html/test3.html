@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!-- Template by html.am -->
+<html>
+ <head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>Imitate Me</title>
+   <link rel='stylesheet' href='../css/styles.css' type='text/css' />
+   <input id="individualname"  type="hidden" value="Alex">
+    <link href="https://fonts.googleapis.com/css?family=Lato|Montserrat:200|Open+Sans:300|Roboto" rel="stylesheet">
+ </head>
+
+ <body>
+  <div class="menu">
+      <ul>
+       <li><a href="index.html">ABOUT</a></li>
+       <li><a href="record.html">RECORD</a></li>
+       <li><a href="#">IMITATE</a></li>
+     </ul>
+   </div>
+
+   <header id="header">
+     <div class="innertube">
+       <h1>Test</h1>
+     </div>
+   </header>
+
+   <div id="wrapper">
+
+     <main>
+       <div id="content">
+         <div class="innertube">
+            <button id="start-recording" onclick=start()>Start</button></div>
+           
+                
+          <iframe id="video" width="800" height="415" id="video" src="https://www.youtube.com/embed/Rt42RTec8bE?rel=0&amp;controls=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                   <script>
+                    function start(){
+                        var vid=document.getElementById("video");
+                        vid.src += "&autoplay=1";
+                      };
+                   </script>
+         </div>
+       </div>
+     </main>
+   </div>
+ </body>
+</html>

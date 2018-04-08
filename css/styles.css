@@ -9,6 +9,10 @@
 	padding-top: 2%;
 	background-color: lightblue;
 }
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* fraction*/
+}
 
 ul {
 	list-style: none;
