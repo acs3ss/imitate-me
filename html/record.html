@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -33,14 +33,15 @@
           // downloadObjectAsJson(EMGarray, "emgData");
           console.log("Downloaded JSON");
 
-          corsReq('http://127.0.0.1:5000/', sendJsonObject(array,document.getElementById("individualname")));
+          // corsReq('http://127.0.0.1:5000/', sendJsonObject(array, "alex.json"));
+          corsReq('http://127.0.0.1:5000/', 0);
           console.log("Submitted GET request");
 
           array = [];
           emgArray = [];
       }
       function sendJsonObject(exportObj,name){
-        var jsonthing={"filename":name,"data":JSON.stringify(exportObj)};
+        var jsonthing={"filename":name, "data":JSON.stringify(exportObj)};
         return jsonthing;
       }
 
@@ -71,10 +72,10 @@
       }
       function corsReq(uri, exportObj) {
         // var uri = 'http://127.0.0.1:5000/';
-        var data = encodeURIComponent(JSON.stringify(exportObj));
-        var encoded = encodeURI(uri);
+        var data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+        var uri = encodeURI(uri);
 
-        var xhr = createCORSRequest('GET', uri);
+        var xhr = createCORSRequest('POST', uri, true);
         if (!xhr) {
           throw new Error('CORS not supported');
         }

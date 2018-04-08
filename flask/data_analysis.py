@@ -117,6 +117,7 @@ def comp_crits(name):
 
 def analyze(jsondata, filetest):
     data = json.load(open('../data/data.json'))
+    # data = jsondata
     test = json.load(open('../data/' + filetest))
 
     df = pd.DataFrame(data)
@@ -141,7 +142,7 @@ def analyze(jsondata, filetest):
 
     dfm = pd.concat([df2, dft2], axis=1)
     dfm = dfm.drop(['accelerometer', 'gyroscope', 'orientation', 'accelerometer_t', 'gyroscope_t', 'orientation_t'], axis=1)
-    
+
     dfscaled = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(dfm.values))
 #    dfscaled.columns = cols+test_cols[3:]+[col+"_diff" for col in cols]
     dfscaled.columns = cols+test_cols[3:]
@@ -152,7 +153,7 @@ def analyze(jsondata, filetest):
     dfagg = dfmdiff.agg(['sum', 'min', 'max', 'mean', 'median', 'std'])
 
     def why(x):
-        try:           
+        try:
             return x['mean']/max(abs(x['min']), x['max'])
         except:
             return 0
@@ -160,7 +161,7 @@ def analyze(jsondata, filetest):
 #    dfcrits = crits(dfm, dfagg)
 #    dfcritsroll = comp_crits(dfcrits)
     dfaggstd = dfagg.apply(lambda x: why(x), axis=0)
-    
+
     dfaggstd = dfaggstd.drop(cols+test_cols[3:])
 
     total = 0
