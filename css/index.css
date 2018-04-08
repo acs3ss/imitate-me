@@ -66,3 +66,14 @@ nav ul a {
 	color: darkgreen;
 	text-decoration: none;
 }
+.control{
+	border-radius: 2em;
+    padding: 6px 18px;
+    background-color: #10c469 !important;
+    border: 1px solid #10c469 !important;
+        font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+}

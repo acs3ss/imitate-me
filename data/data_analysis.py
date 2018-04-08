@@ -8,6 +8,9 @@ import math
 import pandas as pd
 import json
 import matplotlib.pyplot as plt
+from sklearn.externals import joblib
+
+# joblib.dump(lin_reg, "linear_regression_model.pkl")
 
 
 def clean(name):
@@ -20,7 +23,7 @@ def clean(name):
 def extract_cols(df):
     accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z, orient_x, orient_y, orient_z = [], [], [], [], [], [], [], [], []
     extractions = [accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z, orient_x, orient_y, orient_z]
-    
+
     for i, row in df.iterrows():
         accel_x.append(row.accelerometer['x'])
         accel_y.append(row.accelerometer['y'])
@@ -31,7 +34,7 @@ def extract_cols(df):
         orient_x.append(row.orientation['x'])
         orient_y.append(row.orientation['y'])
         orient_z.append(row.orientation['z'])
-        
+
     dfe = pd.DataFrame(extractions)
     dfe = dfe.transpose()
     dfe.columns = ['accel_x', 'accel_y', 'accel_z', 'gyro_x', 'gyro_y', 'gyro_z', 'orient_x', 'orient_y', 'orient_z']
@@ -40,25 +43,25 @@ def extract_cols(df):
 
 def plot_rolling(df, col):
     rolling = df[col].rolling(2, center=True)
-    
+
     data = pd.DataFrame({'input': df[col],
                          'rolling_mean': rolling.mean(),
                          'rolling_std': rolling.std()})
     ax = data.plot(style=['-', '--', ':'])
     ax.set_xticklabels(col)
     ax.lines[0].set_alpha(0.3)
-    
-    
+
+
 def plot_dual_rolling(df, col):
     rolling_o = df[col].rolling(2, center=True)
     rolling_y = df[col+'_t'].rolling(2, center=True)
-    
+
     data = pd.DataFrame({'original': rolling_o.mean(),
                          'yours': rolling_y.mean()})
     ax = data.plot(style=['-', '--'])
     ax.set_xticklabels(col)
     ax.lines[0].set_alpha(0.3)
-    
+
 
 def diff(name):
     cols = ['accel_x', 'accel_y', 'accel_z', 'gyro_x', 'gyro_y', 'gyro_z', 'orient_x', 'orient_y', 'orient_z']
