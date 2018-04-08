@@ -11,7 +11,7 @@
 }
 .container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* fraction*/
+  grid-template-columns: .5fr .5fr .5fr; /* fraction*/
 }
 
 ul {
