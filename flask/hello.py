@@ -1,12 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
-# from data_analysis import analyze
-# from sklearn.externals import joblib
+from data_analysis import analyze
+from basic_dtw import get_dtw
+import numpy as np
 
 app = Flask(__name__)
-# app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy   dog'
-# app.config['CORS_HEADERS'] = 'Content-Type'
-# cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 CORS(app, origins="*", allow_headers=[
         "Content-Type", "Authorization", "Access-Control-Allow-Credentials"],
         supports_credentials=True)
@@ -14,19 +12,20 @@ CORS(app, origins="*", allow_headers=[
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    result = str(analyze("yo", "test.json"))
+    return "The model returned: " + result
 
 
 @app.route("/predict", methods=['POST'])
 def predict():
     if request.method == 'POST':
         try:
-            data = request.get_json()
-
-            # lin_reg = joblib.load("../data/linear_regression_model.pkl")
+            jsondata = request.get_json()
+            filename = jsondata['filename']
+            data = jsondata['data']
+            result = str(analyze(data, "test.json"))
 
         except ValueError:
-            return jsonify("Please send only valid JSONs from Myo IMU data")
+            return jsonify("Please send only valid JSONs including Myo IMU data")
 
-        # return jsonify(lin_reg.predict(years_of_experience).tolist())
-        return jsonify({"score": "Don't quit your day job"})
+        return jsonify({"score": result})
