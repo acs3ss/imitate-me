@@ -1,0 +1,101 @@
+ <!DOCTYPE html>
+<!-- Template by html.am -->
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel='stylesheet' href='styles.css' type='text/css' />
+    <link href="https://fonts.googleapis.com/css?family=Lato|Montserrat:200|Open+Sans:300|Roboto" rel="stylesheet">
+		<title>Reflextion</title>
+		<!-- <script type="text/javascript" src="../js/index.js"></script> -->
+    <!-- <script type="text/javascript" src="../js/record.js"></script> -->
+		<!-- <script type="text/javascript" src="../js/record-test.js"></script> -->
+		<!-- <script src="../node-modules/msr/MediaStreamRecorder.js"></script> -->
+    <script type="text/javascript" src="../js/myo.js"></script>
+    <script>
+      var recording = true;
+      var array = [];
+      var emgArray = [];
+      Myo.connect('com.stolksdorf.myAwesomeApp');
+      Myo.on('connected', function(){
+          myMyo = this;
+          this.streamEMG(true);
+          console.log("yo");
+      });
+    </script>
+    <script>
+      // document.getElementById("start-recording").onclick = function() {startRecord()};
+      // document.getElementById("stop-recording").onclick = function() {stopRecord()};
+      function StopRecording() {
+          // Document.getElementById('stop-recording').disabled=true;
+          // Document.getElementById('start-recording').disabled=false;
+          recording = false;
+          console.log(array);
+          // console.log(emgArray);
+          array = [];
+          emgArray = [];
+      }
+
+      function StartRecording() {
+        // Document.getElementById('start-recording').disabled=true;
+        // Document.getElementById('stop-recording').disabled=false;
+        recording = true;
+        console.log("Started recording");
+        Myo.on('imu', function(data){
+            if(recording){
+              array.push(data);
+            }
+        });
+        Myo.on('emg', function(data){
+            if(recording){
+              emgArray.push(data);
+            }
+        });
+      }
+
+      function SaveRecording() {
+          var firebasedata = firebase.database().ref();
+          firebasedata.child("test").set(array[1]);
+        }
+    </script>
+	</head>
+
+	<body>
+    <div class="menu">
+      <ul>
+        <li><a href="index.html">ABOUT</a></li>
+        <li><a href="newr.html">RECORD</a></li>
+        <li><a href="test.html">IMITATE</a></li>
+      </ul>
+    </div>
+      <div class="title">
+        <h1>Reflextion</h1>
+        <div class="record">
+            <h3>Record</h3>
+              <section class="experiment">
+                <div>
+                  <button id="start-recording" onclick="StartRecording()">Start</button>
+                  <button id="stop-recording" onclick="StopRecording()">Stop</button>
+                  <button id="pause-recording" disabled>Pause</button>
+                  <button id="resume-recording" disabled>Resume</button>
+                  <button id="save-recording" onclick="SaveRecording()">Save</button>
+                  <label for="video-width">Video Width:</label>
+                  <input type="text" id="video-width" value="320">
+
+                  <label for="video-height">Video Height:</label>
+                  <input type="text" id="video-height" value="240">
+                </div>
+              </section>
+
+
+              <section class="experiment">
+                <div id="videos-container">
+                  <video controls="" width="320" height="240"></video>
+                </div>
+              </section>
+            <p>
+              Iframe here
+            </p>
+          </div>
+      </div>
+	</body>
+</html>
