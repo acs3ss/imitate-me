@@ -12,7 +12,7 @@
   <div class="menu">
       <ul>
        <li><a href="index.html">ABOUT</a></li>
-       <li><a href="newr.html">RECORD</a></li>
+       <li><a href="record.html">RECORD</a></li>
        <li><a href="#">IMITATE</a></li>
      </ul>
    </div>
@@ -30,15 +30,14 @@
          <div class="innertube">
             <button id="start-recording" onclick=start()>Start</button></div>
                 
-          <iframe id="video" width="800" height="415" id="video" src="https://www.youtube.com/embed/WKm105sh0f4?rel=0&amp;controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          <iframe id="video" width="800" height="415" id="video" src="https://www.youtube.com/embed/WKm105sh0f4?rel=0&amp;controls=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                    <script>
                     function start(){
                         var vid=document.getElementById("video");
                         vid.src += "&autoplay=1";
-                        ytplayer = document.getElementById("video");
-                        alert(ytplayer.getCurrentTime());
                         };
-            
+                        var player = document.getElementById("video"); 
+                        alert(player.getDuration());
                    </script>
          </div>
        </div>
