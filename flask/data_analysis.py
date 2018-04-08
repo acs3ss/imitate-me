@@ -9,8 +9,12 @@ import pandas as pd
 import json
 import matplotlib.pyplot as plt
 from sklearn.externals import joblib
+from basic_dtw import get_dtw
+
 
 # joblib.dump(lin_reg, "linear_regression_model.pkl")
+
+cols = ['accel_x', 'accel_y', 'accel_z', 'gyro_x', 'gyro_y', 'gyro_z', 'orient_x', 'orient_y', 'orient_z']
 
 
 def clean(name):
@@ -37,7 +41,7 @@ def extract_cols(df):
 
     dfe = pd.DataFrame(extractions)
     dfe = dfe.transpose()
-    dfe.columns = ['accel_x', 'accel_y', 'accel_z', 'gyro_x', 'gyro_y', 'gyro_z', 'orient_x', 'orient_y', 'orient_z']
+    dfe.columns = cols
     return pd.concat([df, dfe], axis=1)
 
 
@@ -64,23 +68,66 @@ def plot_dual_rolling(df, col):
 
 
 def diff(name):
-    cols = ['accel_x', 'accel_y', 'accel_z', 'gyro_x', 'gyro_y', 'gyro_z', 'orient_x', 'orient_y', 'orient_z']
     for col in cols:
         name[col+"_diff"] = name.apply(lambda x: x[col] - x[col+"_t"], axis=1)
     return name
 
 
 def crits(name):
-    cols = ['accel_x', 'accel_y', 'accel_z', 'gyro_x', 'gyro_y', 'gyro_z', 'orient_x', 'orient_y', 'orient_z']
     for col in cols:
         name[col+"_crits"] = abs(name[col]) > (2*dfagg[col]['std'] + dfagg[col]['mean'])
         name[col+"_t_crits"] = abs(name[col]) > (2*dfagg[col+'_t']['std'] + dfagg[col+'_t']['mean'])
-#        name[col+"_t_crits"] = name.apply(lambda x: abs(x[col]) > (2*dfagg[col+'_t']['std'] + dfagg[col+'_t']['mean']), axis=1)
-#        name[col+"_crits"] = name.apply(lambda x: abs(x[col]) > (2*dfagg[col]['std'] + dfagg[col]['mean']), axis=1)
+        name[col+"_crits"] = name[col+"_crits"].astype(int)
+        name[col+"_t_crits"] = name[col+"_t_crits"].astype(int)
     return name
 
-data = json.load(open('data.json'))
-test = json.load(open('test.json'))
+
+def comp_crits(name):
+    for col in cols:
+        name[col+"_crits_roll"] = name[col+"_crits"].rolling(4, win_type='triang').sum()
+        name[col+"_t_crits_roll"] = name[col+"_t_crits"].rolling(4, win_type='triang').sum()
+    return name
+
+
+#def aligned_crits(name):
+#    for col in cols:
+#        name[col+"_crits_roll_same"] = name.apply(lambda x: help_align(x, col)) 
+#    return name
+#
+#
+#def help_align(row, col):
+#    if row[col+"_t_crits_roll"] != 0 and row[col+"_crits_roll"] != 0:
+#        print('yup')
+#        return row[col+"_crits_roll"] + row[col+"_t_crits_roll"]
+#    else:
+#        print('nope')
+#        return 0
+#
+#
+#def get_aligned(name):
+#    total = 0
+#    for col in cols:
+#        total += name[col+"_crits_roll"] + name[col+"_t_crits_roll"] if (name[col+"_t_crits_roll"] > 0) & (name[col+"_crits_roll"] > 0) else 0; 
+#    return total
+#
+#
+#def better_align(name):
+#    count = []
+#    for col in cols:
+#        count.append(name[(name[col+"_crits_roll"] > 0) & (name[col+"_t_crits_roll"] > 0)].count())
+#    return count
+
+def learn():
+    total = 0
+    for col in cols:
+        total += abs(dfaggstd[col]['mean'] - dfaggstd[col+'_t']['mean'])
+        
+    return total
+    
+
+
+data = json.load(open('../data/data.json'))
+test = json.load(open('../data/test.json'))
 
 df = pd.DataFrame(data)
 dft = pd.DataFrame(test)
@@ -109,3 +156,8 @@ dfmdiff = diff(dfm)
 dfagg = dfmdiff.agg(['sum', 'min', 'max', 'mean', 'median', 'std'])
 
 dfcrits = crits(dfm)
+dfcritsroll = comp_crits(dfcrits)
+dfaggstd = dfagg.div(dfagg.sum(axis=1), axis=0)
+
+
+
