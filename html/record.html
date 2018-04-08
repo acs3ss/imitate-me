@@ -33,11 +33,15 @@
           // downloadObjectAsJson(EMGarray, "emgData");
           console.log("Downloaded JSON");
 
-          corsReq('http://127.0.0.1:5000/', 0);
+          corsReq('http://127.0.0.1:5000/', sendJsonObject(array,document.getElementById("individualname")));
           console.log("Submitted GET request");
 
           array = [];
           emgArray = [];
+      }
+      function sendJsonObject(exportObj,name){
+        var jsonthing={"filename":name,"data":JSON.stringify(exportObj)};
+        return jsonthing;
       }
 
       function downloadObjectAsJson(exportObj, exportName){
