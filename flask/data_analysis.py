@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Apr  7 14:11:10 2018
-
-@author: student
-"""
-import math
 import pandas as pd
 import json
-import matplotlib.pyplot as plt
-from sklearn.externals import joblib
-from basic_dtw import get_dtw
-
-
-# joblib.dump(lin_reg, "linear_regression_model.pkl")
+from scipy.spatial.distance import euclidean
+from fastdtw import fastdtw
+from sklearn import preprocessing
 
 cols = ['accel_x', 'accel_y', 'accel_z', 'gyro_x', 'gyro_y', 'gyro_z', 'orient_x', 'orient_y', 'orient_z']
+weights = [21, 20, 20, 5, 5, 5, 8, 8, 8]
+
+
+def get_dtw(x, y):
+    distance, path = fastdtw(x, y, dist=euclidean)
+    return distance
 
 
 def clean(name):
@@ -73,10 +70,10 @@ def diff(name):
     return name
 
 
-def crits(name):
+def crits(name, agg):
     for col in cols:
-        name[col+"_crits"] = abs(name[col]) > (2*dfagg[col]['std'] + dfagg[col]['mean'])
-        name[col+"_t_crits"] = abs(name[col]) > (2*dfagg[col+'_t']['std'] + dfagg[col+'_t']['mean'])
+        name[col+"_crits"] = abs(name[col]) > (2*agg[col]['std'] + agg[col]['mean'])
+        name[col+"_t_crits"] = abs(name[col]) > (2*agg[col+'_t']['std'] + agg[col+'_t']['mean'])
         name[col+"_crits"] = name[col+"_crits"].astype(int)
         name[col+"_t_crits"] = name[col+"_t_crits"].astype(int)
     return name
@@ -91,7 +88,7 @@ def comp_crits(name):
 
 #def aligned_crits(name):
 #    for col in cols:
-#        name[col+"_crits_roll_same"] = name.apply(lambda x: help_align(x, col)) 
+#        name[col+"_crits_roll_same"] = name.apply(lambda x: help_align(x, col))
 #    return name
 #
 #
@@ -107,7 +104,7 @@ def comp_crits(name):
 #def get_aligned(name):
 #    total = 0
 #    for col in cols:
-#        total += name[col+"_crits_roll"] + name[col+"_t_crits_roll"] if (name[col+"_t_crits_roll"] > 0) & (name[col+"_crits_roll"] > 0) else 0; 
+#        total += name[col+"_crits_roll"] + name[col+"_t_crits_roll"] if (name[col+"_t_crits_roll"] > 0) & (name[col+"_crits_roll"] > 0) else 0;
 #    return total
 #
 #
@@ -117,47 +114,68 @@ def comp_crits(name):
 #        count.append(name[(name[col+"_crits_roll"] > 0) & (name[col+"_t_crits_roll"] > 0)].count())
 #    return count
 
-def learn():
-    total = 0
-    for col in cols:
-        total += abs(dfaggstd[col]['mean'] - dfaggstd[col+'_t']['mean'])
-        
-    return total
+
+def analyze(jsondata, filetest):
+    data = json.load(open('../data/data.json'))
+    test = json.load(open('../data/' + filetest))
+
+    df = pd.DataFrame(data)
+    dft = pd.DataFrame(test)
+
+    mod = clean(df)
+    modt = clean(dft)
+
+    df1 = df[df.index % mod == 0].reset_index(drop=True)
+    dft1 = dft[dft.index % modt == 0].reset_index(drop=True)
+
+    dft1 = dft1[dft1.index < df1.shape[0]]
+    df1 = df1[df1.index < dft1.shape[0]]
+
+    df2 = extract_cols(df1)
+    dft2 = extract_cols(dft1)
+
+    test_cols = []
+    for col in list(dft2.columns):
+        test_cols.append(col+"_t")
+    dft2.columns = test_cols
+
+    dfm = pd.concat([df2, dft2], axis=1)
+    dfm = dfm.drop(['accelerometer', 'gyroscope', 'orientation', 'accelerometer_t', 'gyroscope_t', 'orientation_t'], axis=1)
     
+    dfscaled = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(dfm.values))
+#    dfscaled.columns = cols+test_cols[3:]+[col+"_diff" for col in cols]
+    dfscaled.columns = cols+test_cols[3:]
 
+#    plot_dual_rolling(dfm, 'accel_x')
 
-data = json.load(open('../data/data.json'))
-test = json.load(open('../data/test.json'))
+    dfmdiff = diff(dfm)
+    dfagg = dfmdiff.agg(['sum', 'min', 'max', 'mean', 'median', 'std'])
 
-df = pd.DataFrame(data)
-dft = pd.DataFrame(test)
+    def why(x):
+        try:           
+            return x['mean']/max(abs(x['min']), x['max'])
+        except:
+            return 0
 
-mod = clean(df)
-modt = clean(dft)
+#    dfcrits = crits(dfm, dfagg)
+#    dfcritsroll = comp_crits(dfcrits)
+    dfaggstd = dfagg.apply(lambda x: why(x), axis=0)
+    
+    dfaggstd = dfaggstd.drop(cols+test_cols[3:])
 
-df1 = df[df.index % mod == 0].reset_index(drop=True)
-dft1 = dft[dft.index % modt == 0].reset_index(drop=True)
+    total = 0
+    dtw = 0
+    i = 0
+    for i, col in enumerate(cols):
+        to_add = abs(dfaggstd[i])
+        total += to_add*weights[i]
+        to_add_dtw = get_dtw(dfscaled[col].values, dfscaled[col+'_t'].values)
+        dtw += to_add_dtw*weights[i]
+    dtw /= 100*dfscaled.shape[0]
+    total /= 10
+    result = (2- dtw - total)
+    print(dtw)
+    print(total)
+    return result
 
-dft1 = dft1[dft1.index < df1.shape[0]]
-
-df2 = extract_cols(df1)
-dft2 = extract_cols(dft1)
-
-test_cols = []
-for col in list(dft2.columns):
-    test_cols.append(col+"_t")
-dft2.columns = test_cols
-
-dfm = pd.concat([df2, dft2], axis=1)
-
-plot_dual_rolling(dfm, 'accel_x')
-
-dfmdiff = diff(dfm)
-dfagg = dfmdiff.agg(['sum', 'min', 'max', 'mean', 'median', 'std'])
-
-dfcrits = crits(dfm)
-dfcritsroll = comp_crits(dfcrits)
-dfaggstd = dfagg.div(dfagg.sum(axis=1), axis=0)
-
-
-
+#print(analyze('yo', "test.json"))
