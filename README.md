@@ -1,7 +1,7 @@
 # imitate-me
 
-![Reflxetion logo dancing](/images/logo-Alex.png)
-![Reflextion logo soccer](/images/logo-Abhishek.png)
+![Reflxetion logo dancing](/imgs/logo-alex.jpg)
+![Reflextion logo soccer](/imgs/logo-abhishek.jpg)
 
 ## Inspiration:
 
