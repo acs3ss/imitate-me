@@ -7,6 +7,118 @@
    <link rel='stylesheet' href='../css/styles.css' type='text/css' />
    <input id="individualname"  type="hidden" value="Abhishek">
     <link href="https://fonts.googleapis.com/css?family=Lato|Montserrat:200|Open+Sans:300|Roboto" rel="stylesheet">
+    <script type="text/javascript" src="../js/myo.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script>
+      var recording = true;
+      var array = [];
+      var emgArray = [];
+      Myo.connect('com.stolksdorf.myAwesomeApp');
+      Myo.on('connected', function(){
+          myMyo = this;
+          this.streamEMG(true);
+          console.log("yo");
+      });
+    </script>
+    <script type="text/javascript">
+
+      document.getElementById("start-recording").disabled = true;
+    </script>
+    <script>
+      // document.getElementById("start-recording").onclick = function() {startRecord()};
+      // document.getElementById("stop-recording").onclick = function() {stopRecord()};
+      function StopRecording() {
+          recording = false;
+          document.getElementById("start-recording").disabled = false;
+          document.getElementById("stop-recording").disabled = true;
+          // console.log(array);
+          // downloadObjectAsJson(array, "data");
+          // downloadObjectAsJson(EMGarray, "emgData");
+          console.log("Downloaded JSON");
+
+          corsReq('http://127.0.0.1:5000/predict', sendJsonObject(array, "alex.json"));
+          // corsReq('http://127.0.0.1:5000/', 0);
+          console.log("Submitted GET request");
+
+          array = [];
+          emgArray = [];
+      }
+      function sendJsonObject(exportObj,name){
+        var jsonthing={"filename":name, "data":JSON.stringify(exportObj)};
+        return jsonthing;
+      }
+
+      function downloadObjectAsJson(exportObj, exportName){
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     dataStr);
+        downloadAnchorNode.setAttribute("download", exportName + ".json");
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+      }
+
+      function StartRecording() {
+        document.getElementById("start-recording").disabled = true;
+        document.getElementById("stop-recording").disabled = false;
+        recording = true;
+        console.log("Started recording");
+        Myo.on('imu', function(data){
+            if(recording){
+              array.push(data);
+            }
+        });
+        Myo.on('emg', function(data){
+            if(recording){
+              emgArray.push(data);
+            }
+        });
+      }
+      function corsReq(uri, exportObj) {
+        // var uri = 'http://127.0.0.1:5000/';
+        var data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+        var uri = encodeURI(uri);
+
+        var xhr = createCORSRequest('POST', uri, true);
+        if (!xhr) {
+          throw new Error('CORS not supported');
+        }
+        xhr.withCredentials = true;
+        // xhr.addHeader(Access-Control-Allow-Credentials=true);
+        xhr.onload = function() {
+          var responseText = xhr.responseText;
+          console.log(responseText);
+          // TODO process the response.
+        };
+
+        xhr.onerror = function() {
+          console.log('There was an error!');
+        };
+
+        if(data == 0) {
+          xhr.send();
+        } else {
+          xhr.send(data);
+        }
+      }
+
+      function createCORSRequest(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+          // Check if the XMLHttpRequest object has a "withCredentials" property.
+          // "withCredentials" only exists on XMLHTTPRequest2 objects.
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // Otherwise, check if XDomainRequest.
+          // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // Otherwise, CORS is not supported by the browser.
+          xhr = null;
+        }
+        return xhr;
+      }
+    </script>
  </head>
 
  <body>
@@ -30,11 +142,26 @@
        <div id="content">
          <div class="innertube">
             <button id="start-recording" onclick=start()>Start</button></div>
-           
-                
+            <button id="stop-recording" onclick="StopRecording()">Stop</button>
+
+
           <iframe id="video" width="800" height="415" id="video" src="https://www.youtube.com/embed/bZeC1HSuLII?rel=0&amp;controls=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                    <script>
                     function start(){
+                        document.getElementById("start-recording").disabled = true;
+                        document.getElementById("stop-recording").disabled = false;
+                        recording = true;
+                        console.log("Started recording");
+                        Myo.on('imu', function(data){
+                            if(recording){
+                              array.push(data);
+                            }
+                        });
+                        Myo.on('emg', function(data){
+                            if(recording){
+                              emgArray.push(data);
+                            }
+                        });
                         var vid=document.getElementById("video");
                         vid.src += "&autoplay=1";
                         };

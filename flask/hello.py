@@ -22,6 +22,7 @@ def predict():
     if request.method == 'POST':
         try:
             jsondata = request.get_json()
+            print(jsondata)
             filename = jsondata['filename']
             data = jsondata['data']
             result = str(analyze(data, filename))
