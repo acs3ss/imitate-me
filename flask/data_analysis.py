@@ -116,8 +116,10 @@ def comp_crits(name):
 
 
 def analyze(jsondata, filetest):
-    data = json.load(open('../data/data.json'))
-    # data = jsondata
+    if type(jsondata) != 'json':
+        data = json.load(open('../data/data.json'))
+    else:
+        data = jsondata
     test = json.load(open('../data/' + filetest))
 
     df = pd.DataFrame(data)
